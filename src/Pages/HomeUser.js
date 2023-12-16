@@ -36,7 +36,11 @@ const HomeUser = () => {
         </div>
       </div>
       {(user.length === 0) ? (
-        <h4 className='mt-5'>Chưa có người dùng</h4>
+        <div className='col-8 d-flex justify-content-center mt-5'>
+          <div class="spinner-border mt-5" role="status" style={{width: "5rem", height: "5rem"}}>
+            <span class="sr-only"></span>
+          </div>
+        </div>
       ) : (
         <div class="col-8">
           <table class="table table-bordered mt-3">

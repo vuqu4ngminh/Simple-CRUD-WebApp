@@ -1,7 +1,42 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useNavigate, useParams, Link } from 'react-router-dom'
+import { checkValue } from '../Utils'
+import axios from 'axios'
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 const UpdateUser = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [name, setName] = useState('')
+  const [age, setAge] = useState('')
+
+  const updateUser = async (e) => {
+    e.preventDefault()
+    if (checkValue(name, age)) {
+      try {
+        await axios.post("https://simple-crud-x6b5.onrender.com/api/v1/update", {
+          id: id,
+          name: name,
+          age: age
+        })
+        toast.success("Cập nhật thành công")
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
+      } catch (error) {
+        toast.error(error)
+      }
+    }
+  }
+  useEffect(() => {
+    const fetchData = async (userId) => {
+      const res = await axios.get(`https://simple-crud-x6b5.onrender.com/api/v1/${userId}`)
+      setName(res.data.name)
+      setAge(res.data.age)
+    }
+    fetchData(id)
+  }, [id])
   return (
     <div class="row">
       <div class="col-8">
@@ -10,20 +45,19 @@ const UpdateUser = () => {
           <Link class="btn btn-danger" to={"/"}>Quay Lại</Link>
         </div>
         <div class="mt-3">
-          <form method="post" action="/update">
+          <form onSubmit={updateUser}>
             <div class="col">
-              <div class="col-md-6" style={{width: "100%"}}>
-                <input type="text" hidden name="id" value="<%= data._id %>" />
-                  <div class="form-group">
-                    <label class="control-label mt-3 mb-3" for="name">Tên:</label>
-                    <input type="text" class="form-control" name="name" value="<%= data.name %>"
-                      required />
-                  </div>
-                  <div class="form-group">
-                    <label class="control-label mt-3 mb-3" for="Price">Tuổi:</label>
-                    <input type="text" class="form-control" value="<%= data.age %>" name="age"
-                      required />
-                  </div>
+              <div class="col-md-6" style={{ width: "100%" }}>
+                <div class="form-group">
+                  <label class="control-label mt-3 mb-3" for="name">Tên:</label>
+                  <input type="text" class="form-control" value={name} onChange={(e) => setName(e.target.value)}
+                    required />
+                </div>
+                <div class="form-group">
+                  <label class="control-label mt-3 mb-3" for="age">Tuổi:</label>
+                  <input type="text" class="form-control" value={age} onChange={(e) => setAge(e.target.value)}
+                    required />
+                </div>
               </div>
               <div class="col-md-12">
                 <div class="form-group d-flex justify-content-end mt-5">
