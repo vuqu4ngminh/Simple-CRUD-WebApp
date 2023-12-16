@@ -19,6 +19,8 @@ const AddUser = () => {
           age: age
         })
         toast.success('Thêm thành công');
+        setName('')
+        setAge('')
       }
     } catch (error) {
       toast.error(error)
